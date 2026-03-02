@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Cargo Investment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white: #ffffff;
+      --bg: #f7f8fa;
+      --dark: #0d1117;
+      --mid: #5a6070;
+      --light: #e4e8ef;
+      --accent: #1a56db;
+      --accent-light: #eff4ff;
+      --radius: 4px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(247,248,250,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--light);
+      padding: 0 5%;
+      height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--dark);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links {
+      display: flex; gap: 36px; list-style: none;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--mid);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta {
+      padding: 9px 22px;
+      background: var(--accent);
+      color: #fff !important;
+      border-radius: var(--radius);
+      font-weight: 500 !important;
+      transition: background 0.2s, transform 0.2s !important;
+    }
+    .nav-cta:hover { background: #1447c0 !important; transform: translateY(-1px); }
+    .hamburger {
+      display: none;
+      flex-direction: column; gap: 5px;
+      cursor: pointer; border: none; background: none; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--dark); border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .mobile-menu {
+      display: none;
+      position: fixed; top: 68px; left: 0; right: 0; z-index: 99;
+      background: var(--white);
+      border-bottom: 1px solid var(--light);
+      padding: 20px 5%;
+      flex-direction: column; gap: 4px;
+    }
+    .mobile-menu a {
+      display: block; padding: 12px 0;
+      font-size: 16px; color: var(--dark);
+      text-decoration: none;
+      border-bottom: 1px solid var(--light);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--accent); }
+    .mobile-menu.open { display: flex; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      padding: 140px 5% 100px;
+      display: flex; align-items: center;
+      background: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      /* ↓↓ REPLACE THIS URL WITH YOUR OWN IMAGE ↓↓ */
+      background-image: url('YOUR-BACKGROUND-IMAGE.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      /* Overlay so text stays readable */
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(255,255,255,0.96) 0%,
+        rgba(255,255,255,0.88) 45%,
+        rgba(255,255,255,0.4) 100%
+      );
+    }
+    /* Dashed border shows placeholder area in edit mode */
+    .hero-bg.placeholder {
+      background-color: #e8ecf3;
+      background-image: none;
+    }
+    .hero-bg.placeholder::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 18px,
+        rgba(26,86,219,0.04) 18px,
+        rgba(26,86,219,0.04) 36px
+      );
+    }
+    .hero-bg-label {
+      position: absolute;
+      top: 50%; right: 6%;
+      transform: translateY(-50%);
+      z-index: 2;
+      background: rgba(255,255,255,0.9);
+      border: 1.5px dashed rgba(26,86,219,0.35);
+      border-radius: 8px;
+      padding: 24px 32px;
+      text-align: center;
+      max-width: 220px;
+      pointer-events: none;
+    }
+    .hero-bg-label svg { opacity: 0.3; margin-bottom: 8px; }
+    .hero-bg-label p { font-size: 12px; color: var(--mid); line-height: 1.5; }
+    .hero-bg-label strong { display: block; font-size: 13px; color: var(--accent); margin-bottom: 4px; font-weight: 600; }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--light);
+      z-index: 1;
+    }
+    .hero-inner { position: relative; z-index: 2; }
+    .hero-inner {
+      max-width: 780px;
+      animation: fadeUp 0.9s ease both;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+      border: 1px solid rgba(26,86,219,0.15);
+    }
+    .hero-badge::before { content: '●'; font-size: 8px; }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(44px, 7vw, 88px);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      color: var(--dark);
+      margin-bottom: 24px;
+    }
+    .hero h1 .accent { color: var(--accent); }
+    .hero-tagline {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--mid);
+      font-weight: 300;
+      max-width: 540px;
+      margin-bottom: 48px;
+      line-height: 1.65;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .btn-primary {
+      padding: 14px 36px;
+      background: var(--accent);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      border-radius: var(--radius);
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(26,86,219,0.2);
+    }
+    .btn-primary:hover { background: #1447c0; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(26,86,219,0.3); }
+    .btn-ghost {
+      padding: 14px 28px;
+      background: transparent;
+      color: var(--dark);
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      text-decoration: none;
+      border: 1.5px solid var(--light);
+      border-radius: var(--radius);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .hero-stats {
+      display: flex; gap: 48px; margin-top: 72px;
+      padding-top: 40px; border-top: 1px solid var(--light);
+      flex-wrap: wrap;
+    }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 36px; font-weight: 700;
+      color: var(--dark); line-height: 1;
+    }
+    .stat-label { font-size: 13px; color: var(--mid); margin-top: 4px; font-weight: 300; }
+
+    /* ── ABOUT ── */
+    .about {
+      padding: 120px 5%;
+      background: var(--bg);
+    }
+    .section-tag {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-tag::before { content: ''; display: inline-block; width: 28px; height: 2px; background: var(--accent); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .about h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 24px;
+      color: var(--dark);
+    }
+    .about p {
+      font-size: 16px;
+      color: var(--mid);
+      line-height: 1.8;
+      font-weight: 300;
+      margin-bottom: 20px;
+    }
+    .about-visual {
+      position: relative;
+    }
+    .about-img-wrap {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--light);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .placeholder-img {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px;
+      color: #9aa3b0;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+    }
+    .placeholder-img svg { opacity: 0.4; }
+    .about-card {
+      position: absolute;
+      bottom: -28px; left: -28px;
+      background: var(--white);
+      border: 1px solid var(--light);
+      border-radius: 8px;
+      padding: 20px 24px;
+      box-shadow: 0 8px 32px rgba(13,17,23,0.08);
+    }
+    .about-card-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px; font-weight: 700;
+      color: var(--accent);
+    }
+    .about-card-label { font-size: 12px; color: var(--mid); margin-top: 2px; }
+    .about-values {
+      display: flex; flex-direction: column; gap: 16px;
+      margin-top: 32px;
+    }
+    .value-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 18px 20px;
+      background: var(--white);
+      border: 1px solid var(--light);
+      border-radius: 6px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .value-item:hover { border-color: rgba(26,86,219,0.25); box-shadow: 0 4px 16px rgba(26,86,219,0.06); }
+    .value-icon {
+      width: 36px; height: 36px;
+      background: var(--accent-light);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 16px;
+    }
+    .value-text h4 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .value-text p { font-size: 13px; color: var(--mid); font-weight: 300; line-height: 1.5; }
+
+    /* ── GALLERY ── */
+    .gallery {
+      padding: 120px 5%;
+      background: var(--white);
+    }
+    .gallery-header {
+      max-width: 1200px; margin: 0 auto 56px;
+    }
+    .gallery-header h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700; letter-spacing: -0.02em; line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .gallery-header p { font-size: 16px; color: var(--mid); font-weight: 300; max-width: 500px; }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .gallery-item {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--light);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .gallery-item:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(13,17,23,0.1); }
+    .gallery-item:first-child {
+      grid-column: span 2;
+    }
+    .gallery-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #e8ecf3 0%, #d4dae6 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 10px;
+      color: #8a95a3;
+      font-size: 13px;
+      position: relative;
+    }
+    .gallery-item:first-child .gallery-img { aspect-ratio: 16/7; }
+    .gallery-img svg { opacity: 0.35; }
+    .gallery-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 12px 16px;
+      background: linear-gradient(to top, rgba(13,17,23,0.5), transparent);
+      color: #fff;
+      font-size: 13px; font-weight: 500;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .gallery-item:hover .gallery-label { opacity: 1; }
+
+    /* ── CONTACT ── */
+    .contact {
+      padding: 120px 5%;
+      background: var(--bg);
+    }
+    .contact-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: start;
+    }
+    .contact h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700; letter-spacing: -0.02em; line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .contact-desc { font-size: 16px; color: var(--mid); font-weight: 300; line-height: 1.8; margin-bottom: 40px; }
+    .contact-info { display: flex; flex-direction: column; gap: 16px; }
+    .contact-info-item {
+      display: flex; align-items: center; gap: 14px;
+      font-size: 15px; color: var(--mid);
+    }
+    .contact-info-item span:first-child {
+      width: 40px; height: 40px;
+      background: var(--accent-light);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .form-wrap {
+      background: var(--white);
+      border: 1px solid var(--light);
+      border-radius: 10px;
+      padding: 44px;
+      box-shadow: 0 4px 24px rgba(13,17,23,0.05);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    .form-group label {
+      font-size: 13px; font-weight: 500;
+      color: var(--dark); letter-spacing: 0.02em;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 12px 16px;
+      background: var(--bg);
+      border: 1.5px solid var(--light);
+      border-radius: var(--radius);
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      color: var(--dark);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-group select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%235a6070' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+    .btn-submit {
+      width: 100%;
+      padding: 15px;
+      background: var(--accent);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(26,86,219,0.2);
+      letter-spacing: 0.02em;
+    }
+    .btn-submit:hover { background: #1447c0; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(26,86,219,0.3); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.5);
+      padding: 40px 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; flex-wrap: wrap;
+    }
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px; font-weight: 700;
+      color: #fff; text-decoration: none;
+    }
+    .footer-logo span { color: var(--accent); }
+    footer p { font-size: 13px; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: #fff; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .about-grid,
+      .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+      .about-visual { order: -1; }
+      .about-card { bottom: -16px; left: -8px; }
+      .gallery-grid { grid-template-columns: 1fr 1fr; }
+      .gallery-item:first-child { grid-column: span 2; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero-stats { gap: 32px; }
+      footer { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+    @media (max-width: 600px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-item:first-child { grid-column: span 1; }
+      .form-wrap { padding: 28px 20px; }
+      .hero-actions { flex-direction: column; align-items: flex-start; }
+      .btn-primary, .btn-ghost { width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="#" class="nav-logo">Secure<span>Cargo</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#contact" class="nav-cta">Get a Quote</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about" onclick="closeMobile()">About</a>
+    <a href="#gallery" onclick="closeMobile()">Gallery</a>
+    <a href="#contact" onclick="closeMobile()">Contact</a>
+    <a href="#contact" onclick="closeMobile()">Get a Quote</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <!-- Background image: swap 'placeholder' class for your own image via CSS or inline style -->
+    <div class="hero-bg placeholder"></div>
+    <div class="hero-bg-label">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      <strong>Background Image</strong>
+      <p>Replace with your own truck or road photo</p>
+    </div>
+    <div class="hero-inner">
+      <div class="hero-badge">Licensed & Insured Carrier</div>
+      <h1>
+        Delivering <span class="accent">Cargo</span><br />
+        You Can Trust.
+      </h1>
+      <p class="hero-tagline">
+        Professional freight transportation across the nation — on time, every time. Your cargo's security is our commitment.
+      </p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Request a Shipment</a>
+        <a href="#about" class="btn-ghost">Learn More</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">10+</div>
+          <div class="stat-label">Years on the Road</div>
+        </div>
+        <div>
+          <div class="stat-num">500K+</div>
+          <div class="stat-label">Miles Delivered</div>
+        </div>
+        <div>
+          <div class="stat-num">100%</div>
+          <div class="stat-label">On-Time Rate</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="about-grid reveal">
+      <div>
+        <div class="section-tag">About Me</div>
+        <h2>Built on Reliability &amp; Hard Work</h2>
+        <p>
+          I'm an independent owner-operator with over a decade of experience hauling freight safely across the country. Secure Cargo Investment was founded on one simple principle: treat every load like it's my own.
+        </p>
+        <p>
+          Whether it's a full truckload or a specialized freight request, I bring professionalism, punctuality, and care to every run — giving shippers and brokers the peace of mind they deserve.
+        </p>
+        <div class="about-values">
+          <div class="value-item">
+            <div class="value-icon">🛡️</div>
+            <div class="value-text">
+              <h4>Fully Insured</h4>
+              <p>Comprehensive cargo and liability insurance on every haul.</p>
+            </div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">📍</div>
+            <div class="value-text">
+              <h4>Real-Time Tracking</h4>
+              <p>Live GPS updates so you always know where your freight is.</p>
+            </div>
+          </div>
+          <div class="value-item">
+            <div class="value-icon">🤝</div>
+            <div class="value-text">
+              <h4>Transparent Pricing</h4>
+              <p>No hidden fees. Clear, upfront quotes on every load.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="about-visual">
+        <div class="about-img-wrap">
+          <div class="placeholder-img">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Your Photo Here
+          </div>
+        </div>
+        <div class="about-card">
+          <div class="about-card-num">10+</div>
+          <div class="about-card-label">Years Experience</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="gallery" id="gallery">
+    <div class="gallery-header reveal">
+      <div class="section-tag">Fleet Gallery</div>
+      <h2>My Trucks &amp; Equipment</h2>
+      <p>Well-maintained, DOT-compliant equipment ready for your freight needs.</p>
+    </div>
+    <div class="gallery-grid reveal">
+      <div class="gallery-item">
+        <div class="gallery-img">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Main Rig — Freightliner Cascadia
+        </div>
+        <div class="gallery-label">Main Rig — Freightliner Cascadia</div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-img">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Dry Van Trailer
+        </div>
+        <div class="gallery-label">53 ft. Dry Van Trailer</div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-img">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 17h18M5 17V7h8l4 4v6"/><circle cx="7.5" cy="18.5" r="2.5"/><circle cx="16.5" cy="18.5" r="2.5"/></svg>
+          Interior Cargo
+        </div>
+        <div class="gallery-label">Secured Interior Load</div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-img">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v4h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Night Haul
+        </div>
+        <div class="gallery-label">Long Haul — Night Run</div>
+      </div>
+      <div class="gallery-item">
+        <div class="gallery-img">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Equipment Detail
+        </div>
+        <div class="gallery-label">Equipment Detail</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="contact-inner reveal">
+      <div>
+        <div class="section-tag">Contact</div>
+        <h2>Ready to Move Your Freight?</h2>
+        <p class="contact-desc">
+          Fill out the form and I'll get back to you within a few hours with a competitive quote. Let's keep your cargo moving.
+        </p>
+        <div class="contact-info">
+          <div class="contact-info-item">
+            <span>📞</span>
+            <span>(555) 000-0000</span>
+          </div>
+          <div class="contact-info-item">
+            <span>✉️</span>
+            <span><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0f666169604f7c6a6c7a7d6a6c6e7d68606661796a7c7b626a617b216c6062">[email&#160;protected]</a></span>
+          </div>
+          <div class="contact-info-item">
+            <span>📍</span>
+            <span>Operating Nationwide — USA</span>
+          </div>
+          <div class="contact-info-item">
+            <span>⏰</span>
+            <span>Available 7 Days a Week</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-wrap">
+        <form onsubmit="handleSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fname">First Name</label>
+              <input type="text" id="fname" placeholder="John" required />
+            </div>
+            <div class="form-group">
+              <label for="lname">Last Name</label>
+              <input type="text" id="lname" placeholder="Smith" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="john@example.com" required />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="(555) 000-0000" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="origin">Origin City</label>
+              <input type="text" id="origin" placeholder="Chicago, IL" required />
+            </div>
+            <div class="form-group">
+              <label for="destination">Destination City</label>
+              <input type="text" id="destination" placeholder="Dallas, TX" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="freight">Freight Type</label>
+            <select id="freight">
+              <option value="">Select freight type</option>
+              <option>General Freight</option>
+              <option>Dry Goods</option>
+              <option>Refrigerated / Reefer</option>
+              <option>Heavy Equipment</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Additional Details</label>
+            <textarea id="message" placeholder="Weight, dimensions, special requirements..."></textarea>
+          </div>
+          <button type="submit" class="btn-submit">Send Quote Request →</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="#" class="footer-logo">Secure<span>Cargo</span> Investment</a>
+    <p>© 2024 Secure Cargo Investment. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="#about">About</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Navbar scroll
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Mobile menu
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    });
+    function closeMobile() {
+      document.getElementById('mobileMenu').classList.remove('open');
+    }
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 80);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+    // Form submit
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('.btn-submit');
+      btn.textContent = '✓ Req
